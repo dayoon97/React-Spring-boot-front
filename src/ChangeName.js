@@ -53,6 +53,10 @@ const ChangeName = () => {
       }
     };
 
+    const onClickPhone = e => {
+      console.log(e.target.innerText);
+    }
+
     return (
     <div className="App">
           <div className="title-area"><h1>ReactJS CRUD</h1></div>
@@ -65,7 +69,7 @@ const ChangeName = () => {
                   <div className="user-area"><div className="user-no" key={index}><span className="cir">{user.no}</span></div>
                   {nameValue === "name" + (index + 1) ? <div className="user-name" id={nameId}><span className="name-list"><input type="text" id="newName" size="5" className="nameinput" onKeyUp={enterEvent}/></span></div>
                   : <div className="user-name" id={"name" + (index + 1)}><span className="name-list" onClick={onClickName}>{user.name}</span></div>}
-                <div className="user-phone">{user.phone}</div><div className="user-gender">{user.gender === 'F' ? '👩' : '👨' }</div></div>))
+                <div className="user-phone"><span className="phone-list" onClick={onClickPhone}>{user.phone}</span></div><div className="user-gender">{user.gender === 'F' ? '👩' : '👨' }</div></div>))
              }
              </DragDropContext>
           </div>
