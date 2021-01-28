@@ -1,6 +1,8 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import './App.css';
+import { Droppable } from 'react-beautiful-dnd';
+import { DragDropContext } from 'react-beautiful-dnd';
 
 let nameValue = '';
 let oldName = '';
@@ -9,6 +11,7 @@ const ChangeName = () => {
     const [nameId, setNameId] = useState('');
     const [userName, setUserName] = useState('');
     const [users, setUsers] = useState([]);
+    const [onDragEnd, setOnDragEnd] = useState('');
 
     useEffect(() => {
     const fetchData = async () => {
@@ -31,16 +34,15 @@ const ChangeName = () => {
 
     const enterEvent = e => {
       let newName = e.target.value;
-      console.log(newName);
+      let params = new URLSearchParams();
+      params.append('oldName', oldName);
+      params.append('newName', newName);
+      //const url = "http://localhost:8080/name";
       if(e.keyCode === 13){
-        axios.put(oldName, {
-        //oldName: oldName,
-        newName: newName
-      })
+        axios.put("/name", params)
       .then(function (response){
-        console.log(response.data);
         if(response.data === 1) {
-          alert("성공~");
+          window.location.replace("/");
         } else {
           alert("오류");
         }
@@ -56,6 +58,7 @@ const ChangeName = () => {
           <div className="title-area"><h1>ReactJS CRUD</h1></div>
           <div className="cont-area">
           <div className="tbl-area">
+            <DragDropContext onDragEnd = {onDragEnd}>
              {
               users.map(
                 (user, index) => (
@@ -64,6 +67,7 @@ const ChangeName = () => {
                   : <div className="user-name" id={"name" + (index + 1)}><span className="name-list" onClick={onClickName}>{user.name}</span></div>}
                 <div className="user-phone">{user.phone}</div><div className="user-gender">{user.gender === 'F' ? '👩' : '👨' }</div></div>))
              }
+             </DragDropContext>
           </div>
           <div className="btn-area">
           </div>
