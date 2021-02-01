@@ -12,19 +12,20 @@ let genderValue = '';
 let phoneTF = false;
 let nameTF = false;
 let genderTF = false;
+let cirTF = false;
 
 const ChangeName = () => {
     const [nameId, setNameId] = useState('');
     const [phoneId, setPhoneId] = useState('');
     const [genderId, setGenderId] = useState('');
-    const [userName, setUserName] = useState('');
     const [users, setUsers] = useState([]);
     const [onDragEnd, setOnDragEnd] = useState('');
+    const [addUser, setAddUser] = useState('');
 
     useEffect(() => {
     const fetchData = async () => {
         const result = await axios(
-          "member"
+          "list"
         );
         setUsers(result.data);
       };
@@ -109,6 +110,37 @@ const ChangeName = () => {
       console.log("genderId", genderId);
     }
 
+    const onClickAddBtn = e => {
+      cirTF = true;
+    }
+
+    const onClicksubmit = e => {
+      let name = document.getElementById("inputName").value;
+      let phone = document.getElementById("inputPhone").value;
+      let gender = document.getElementById("genderSelect").value;
+
+
+      let params = new URLSearchParams();
+      params.append('name', name);
+      params.append('phone', phone);
+      params.append('gender', gender);
+      axios.post("/member", params)
+      .then(function (response){
+        if(response.data === 1) {
+          window.location.replace("/");
+        } else {
+          alert("오류");
+        }
+      })
+      .catch(function(error) {
+        console.log("오류");
+      });
+
+      console.log(name);
+      console.log(phone);
+      console.log(gender);
+    }
+
     return (
     <div className="App">
           <div className="title-area"><h1>ReactJS CRUD</h1></div>
@@ -124,16 +156,14 @@ const ChangeName = () => {
                     {/* 내가 누른 폰 번호의 아이디와 리스트의 아이디가 같으면 input 태그로 바꾸기 */}
                     {phoneValue === "phone" + (index + 1) && phoneTF === true ? <div className="user-phone" id={phoneId}><span className="phone-list"><input type="text" id="newPhone" size="5" className="phoneInput" onKeyUp={phoneEvent}/></span></div>
                     : <div className="user-phone" id={"phone" + (index + 1)}><span className="phone-list" onClick={onClickPhone}>{user.phone}</span></div>}
-                    {genderValue === "gender" + (index + 1) && genderTF === true ? <div className="user-gender" id={"gender" + (index + 1)}>{user.gender === 'F' ? <span className="gender-list">👩</span> : <span className="gender-list">👨</span> }</div> : <div className="user-gender" id={"gender" + (index + 1)}>{user.gender === 'F' ? <span className="gender-list" onClick={onClickGender}>👩</span> : <span className="gender-list">👨</span> }</div>}
+                    {/* 성별 */}
+                    {genderValue === "gender" + (index + 1) && genderTF === true ? <div className="user-gender" id={"gender" + (index + 1)}>{user.gender === 'F' ? <span className="gender-list" onClick={onClickGender}>👩</span> : <span className="gender-list" onClick={onClickGender}>👨</span> }</div> 
+                    : <div className="user-gender" id={"gender" + (index + 1)}>{user.gender === 'F' ? <span className="gender-list" onClick={onClickGender}>👩</span> : <span className="gender-list" onClick={onClickGender}>👨</span> }</div>}
                   </div>
-                  
                   ))
               }
           </div>
-          <div className="btn-area">
-          </div>
-          <div className="add-area"></div>
-          <div className="submit-area"></div>
+          {cirTF === true ? <div className="user-area2"><div className="user-name"><input type="text" size="5" className="nameinput" id="inputName" placeholder="이름"/></div><div className="user-phone"><input type="text" size="5" id="inputPhone" className="phoneInput" placeholder="핸드폰 번호"/></div><div className="user-gender"><select className="selectbox" id="genderSelect"><option value="F">👩</option><option value="M">👨</option></select></div><div className="submit-form"><span className="submit-btn" onClick={onClicksubmit}>전송</span></div></div> : <div className="submit-area"><span className="cir2" onClick={onClickAddBtn}>+</span></div>}
           </div>
          </div>
     );
