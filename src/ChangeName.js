@@ -143,12 +143,25 @@ const ChangeName = () => {
       console.log(gender);
     }
 
+    function handleOnDragEnd(result) {
+      console.log('result?', result);
+      // const currentTags = [...tbl-area];
+      // const draggingItemIndex = result.source.index;
+      // const afterDragItemIndex = result.destination.index;
+
+      // const removeTag = currentTags.splice(beforeDragItemIndex, 1);
+
+      // currentTags.splice(afterDragItemIndex, 0, removeTag[0]);
+
+      // setTags(currentTags);
+    }
+
     return (
     <div className="App">
           <div className="title-area"><h1>ReactJS CRUD</h1></div>
           <div className="cont-area">
-          <DragDropContext>
-          <Droppable droppableId="tbl-area" direction="horizontal">
+          <DragDropContext onDragEnd={handleOnDragEnd}>
+          <Droppable droppableId="tbl-area">
             {provided => (
           <div className="tbl-area" {...provided.droppableProps} ref={provided.innerRef}>
               {

@@ -60,12 +60,13 @@
   padding-left: 60px;
 }
 .tbl-area{
-  width: 85%;
+  width: 350px;
   height: 450px;
   padding-left: 50px;
   padding-top: 30px;
   display: inline-block;
   overflow-y: scroll;
+  overflow-x: hidden;
 }
 .tbl-area::-webkit-scrollbar{
   width: 8px;
