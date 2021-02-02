@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { Droppable } from 'react-beautiful-dnd';
+import { Draggable, Droppable } from 'react-beautiful-dnd';
 import { DragDropContext } from 'react-beautiful-dnd';
 
 let nameValue = '';
@@ -18,19 +18,21 @@ const ChangeName = () => {
     const [nameId, setNameId] = useState('');
     const [phoneId, setPhoneId] = useState('');
     const [genderId, setGenderId] = useState('');
+    const [phone, setPhone] = useState('');
     const [users, setUsers] = useState([]);
     const [onDragEnd, setOnDragEnd] = useState('');
-    const [addUser, setAddUser] = useState('');
 
     useEffect(() => {
-    const fetchData = async () => {
-        const result = await axios(
-          "list"
+      const fetchData = async () => {
+        const result = await axios.get(
+          "/list"
         );
-        setUsers(result.data);
+       setUsers(result.data);
       };
       fetchData();
     });
+
+    
   
     const onClickName = e => {
       const nameId = e.target.parentNode.id;
@@ -145,11 +147,16 @@ const ChangeName = () => {
     <div className="App">
           <div className="title-area"><h1>ReactJS CRUD</h1></div>
           <div className="cont-area">
-          <div className="tbl-area">
+          <DragDropContext>
+          <Droppable droppableId="tbl-area" direction="horizontal">
+            {(provided) => 
+          <div className="tbl-area" {...provided.droppableProps} ref={provided.innerRef}>
               {
                 users.map(
                   (user, index) => (
-                    <div className="user-area"><div className="user-no" key={index}><span className="cir">{user.no}</span></div>
+                    <Draggable key={user.id} draggableId={"user" + (index + 1)} index={index}>
+                      {provided => (
+                    <div className="user-area" {...provided.droppableProps} ref={provided.innerRef} {...provided.dragHandleProps}><div className="user-no" key={index}><span className="cir">{user.no}</span></div>
                     {/* 내가 누른 이름의 아이디와 리스트의 아이디가 같으면 input 태그로 바꾸기 */}
                     {nameValue === "name" + (index + 1) && nameTF === true ? <div className="user-name" id={nameId}><span className="name-list"><input type="text" id="newName" size="5" className="nameinput" onKeyUp={nameEvent}/></span></div>
                     : <div className="user-name" id={"name" + (index + 1)}><span className="name-list" onClick={onClickName}>{user.name}</span></div>}
@@ -160,9 +167,15 @@ const ChangeName = () => {
                     {genderValue === "gender" + (index + 1) && genderTF === true ? <div className="user-gender" id={"gender" + (index + 1)}>{user.gender === 'F' ? <span className="gender-list" onClick={onClickGender}>👩</span> : <span className="gender-list" onClick={onClickGender}>👨</span> }</div> 
                     : <div className="user-gender" id={"gender" + (index + 1)}>{user.gender === 'F' ? <span className="gender-list" onClick={onClickGender}>👩</span> : <span className="gender-list" onClick={onClickGender}>👨</span> }</div>}
                   </div>
+                  )}
+                  </Draggable>
                   ))
               }
+              {provided.placeholder}
           </div>
+          }
+              </Droppable>
+          </DragDropContext>
           {cirTF === true ? <div className="user-area2"><div className="user-name"><input type="text" size="5" className="nameinput" id="inputName" placeholder="이름"/></div><div className="user-phone"><input type="text" size="5" id="inputPhone" className="phoneInput" placeholder="핸드폰 번호"/></div><div className="user-gender"><select className="selectbox" id="genderSelect"><option value="F">👩</option><option value="M">👨</option></select></div><div className="submit-form"><span className="submit-btn" onClick={onClicksubmit}>전송</span></div></div> : <div className="submit-area"><span className="cir2" onClick={onClickAddBtn}>+</span></div>}
           </div>
          </div>
