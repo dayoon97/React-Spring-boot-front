@@ -21,6 +21,7 @@ const ChangeName = () => {
     const [phone, setPhone] = useState('');
     const [users, setUsers] = useState([]);
     const [onDragEnd, setOnDragEnd] = useState('');
+    const [user, updateUsers] = useState('');
 
     useEffect(() => {
       const fetchData = async () => {
@@ -144,16 +145,32 @@ const ChangeName = () => {
     }
 
     function handleOnDragEnd(result) {
+      /**
+     * 필요한 요소
+     *  드래그할 대상의 index
+     *  드래그가 끝났을때의 index
+     *
+     * 할 일
+     * 1. 드래그할 대상의 index를 지운다
+     * 2. 드래그가 끝난 당시의 index에 현재 드래그 중인 요소를 넣는다
+     */
+    if(!result.destination) return;
+    
+    
+    const currentTags = [...user];
+    const draggingItemIndex = result.source.index + 1;
+    const afterDragItemIndex = result.destination.index + 1;
+    
+    const removeTag = currentTags.splice(draggingItemIndex, 1);
+    
       console.log('result?', result);
-      // const currentTags = [...tbl-area];
-      // const draggingItemIndex = result.source.index;
-      // const afterDragItemIndex = result.destination.index;
+      console.log(currentTags);
+      console.log(draggingItemIndex);
+      console.log(afterDragItemIndex);
 
-      // const removeTag = currentTags.splice(beforeDragItemIndex, 1);
+      currentTags.splice(afterDragItemIndex, 0, removeTag[0]);
 
-      // currentTags.splice(afterDragItemIndex, 0, removeTag[0]);
-
-      // setTags(currentTags);
+      updateUsers(currentTags);
     }
 
     return (
@@ -161,23 +178,23 @@ const ChangeName = () => {
           <div className="title-area"><h1>ReactJS CRUD</h1></div>
           <div className="cont-area">
           <DragDropContext onDragEnd={handleOnDragEnd}>
-          <Droppable droppableId="tbl-area">
+          <Droppable droppableId="user">
             {provided => (
           <div className="tbl-area" {...provided.droppableProps} ref={provided.innerRef}>
               {
                 users.map(
                   (user, index) => {
                     return(
-                    <Draggable key={user.id} draggableId={"user" + (index + 1)} index={index}>
+                    <Draggable key={user.no} draggableId={`${user.no}`} index={index}>
                       {provided => (
-                    <div className="user-area" key={user.id} {...provided.draggableProps} ref={provided.innerRef} {...provided.dragHandleProps}><div className="user-no" key={index}><span className="cir">{user.no}</span></div>
+                    <div className="user-area" id={"user" + (index + 1)} key={user.id} {...provided.draggableProps} ref={provided.innerRef} {...provided.dragHandleProps}><div className="user-no" key={index}><span className="cir">{user.no}</span></div>
                     {/* 내가 누른 이름의 아이디와 리스트의 아이디가 같으면 input 태그로 바꾸기 */}
                     {nameValue === "name" + (index + 1) && nameTF === true ? <div className="user-name" id={nameId}><span className="name-list"><input type="text" id="newName" size="5" className="nameinput" onKeyUp={nameEvent}/></span></div>
                     : <div className="user-name" id={"name" + (index + 1)}><span className="name-list" onClick={onClickName}>{user.name}</span></div>}
                     {/* 내가 누른 폰 번호의 아이디와 리스트의 아이디가 같으면 input 태그로 바꾸기 */}
                     {phoneValue === "phone" + (index + 1) && phoneTF === true ? <div className="user-phone" id={phoneId}><span className="phone-list"><input type="text" id="newPhone" size="5" className="phoneInput" onKeyUp={phoneEvent}/></span></div>
                     : <div className="user-phone" id={"phone" + (index + 1)}><span className="phone-list" onClick={onClickPhone}>{user.phone}</span></div>}
-                    {/* 성별 */}
+                    {/* 성별 바꾸기 해야함 */}
                     {genderValue === "gender" + (index + 1) && genderTF === true ? <div className="user-gender" id={"gender" + (index + 1)}>{user.gender === 'F' ? <span className="gender-list" onClick={onClickGender}>👩</span> : <span className="gender-list" onClick={onClickGender}>👨</span> }</div> 
                     : <div className="user-gender" id={"gender" + (index + 1)}>{user.gender === 'F' ? <span className="gender-list" onClick={onClickGender}>👩</span> : <span className="gender-list" onClick={onClickGender}>👨</span> }</div>}
                   </div>
