@@ -213,7 +213,7 @@ const ChangeName = () => {
           <div className="title-area"><h1>ReactJS</h1></div>
           <div className="cont-area">
           <DragDropContext onDragEnd={handleOnDragEnd}>
-          <Droppable droppableId="user" direction="horizontal">
+          <Droppable droppableId="user">
             {provided => (
           <div className="tbl-area" {...provided.droppableProps} ref={provided.innerRef}>
               {
