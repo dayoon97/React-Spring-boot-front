@@ -21,7 +21,7 @@ const ChangeName = () => {
     const [phone, setPhone] = useState('');
     const [users, setUsers] = useState([]);
     const [onDragEnd, setOnDragEnd] = useState('');
-    const [user, updateUsers] = useState('');
+    const [user, updateUsers] = useState(users);
 
     useEffect(() => {
       const fetchData = async () => {
@@ -144,6 +144,7 @@ const ChangeName = () => {
       console.log(gender);
     }
 
+
     function handleOnDragEnd(result) {
       /**
      * 필요한 요소
@@ -157,7 +158,7 @@ const ChangeName = () => {
     if(!result.destination) return;
     
     
-    const currentTags = [...user];
+    const currentTags = [...users];
     const draggingItemIndex = result.source.index + 1;
     const afterDragItemIndex = result.destination.index + 1;
     
@@ -167,18 +168,52 @@ const ChangeName = () => {
       console.log(currentTags);
       console.log(draggingItemIndex);
       console.log(afterDragItemIndex);
+      console.log(removeTag);
+
 
       currentTags.splice(afterDragItemIndex, 0, removeTag[0]);
 
       updateUsers(currentTags);
+
+      let params = new URLSearchParams();
+      params.append('no', draggingItemIndex);
+      axios.delete("/delMember", params)
+      .then(function (response) {
+        if(response.data === 1) {
+          window.location.replace("/");
+        } else {
+          alert("오류");
+        }
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error);
+      })
+      .then(function () {
+        // always executed
+      });
+
+      // const items = Array.from(users);
+      // const [reorderedItem] = items.splice(result.source.index + 1, 1);
+      // items.splice(result.destination.index + 1, 0, reorderedItem);
+
+      // updateUsers(items);
+
+      // console.log(items);
+      // console.log([reorderedItem]);
+
+    }
+
+    const removeItem = (index) => {
+      this.state.items.splice(index, 1);
     }
 
     return (
     <div className="App">
-          <div className="title-area"><h1>ReactJS CRUD</h1></div>
+          <div className="title-area"><h1>ReactJS</h1></div>
           <div className="cont-area">
           <DragDropContext onDragEnd={handleOnDragEnd}>
-          <Droppable droppableId="user">
+          <Droppable droppableId="user" direction="horizontal">
             {provided => (
           <div className="tbl-area" {...provided.droppableProps} ref={provided.innerRef}>
               {
@@ -205,7 +240,7 @@ const ChangeName = () => {
               {provided.placeholder}
           </div>
           )}
-              </Droppable>
+          </Droppable>
           </DragDropContext>
           {cirTF === true ? <div className="user-area2"><div className="user-name"><input type="text" size="5" className="nameinput" id="inputName" placeholder="이름"/></div><div className="user-phone"><input type="text" size="5" id="inputPhone" className="phoneInput" placeholder="핸드폰 번호"/></div><div className="user-gender"><select className="selectbox" id="genderSelect"><option value="F">👩</option><option value="M">👨</option></select></div><div className="submit-form"><span className="submit-btn" onClick={onClicksubmit}>전송</span></div></div> : <div className="submit-area"><span className="cir2" onClick={onClickAddBtn}>+</span></div>}
           </div>
